@@ -2,24 +2,22 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { Sequelize } from 'sequelize';
 
-// Define the attributes interface
 export interface UserAttributes {
     id: number;
     email: string;
     passwordHash: string;
-    title: string;
+    title: string | null;
     firstName: string;
     lastName: string;
     role: string;
+    verified: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 
-// Define optional attributes for creation
 export interface UserCreationAttributes
-    extends Optional<UserAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+    extends Optional<UserAttributes, 'id' | 'title' | 'verified' | 'createdAt' | 'updatedAt'> {}
 
-// Define the Sequelize model class
 export class User
     extends Model<UserAttributes, UserCreationAttributes>
     implements UserAttributes {
@@ -27,15 +25,15 @@ export class User
     public id!: number;
     public email!: string;
     public passwordHash!: string;
-    public title!: string;
+    public title!: string | null;
     public firstName!: string;
     public lastName!: string;
     public role!: string;
+    public verified!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-// Export the model initializer function
 export default function (sequelize: Sequelize): typeof User {
     User.init(
         {
@@ -55,7 +53,7 @@ export default function (sequelize: Sequelize): typeof User {
             },
             title: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
             },
             firstName: {
                 type: DataTypes.STRING,
@@ -68,6 +66,11 @@ export default function (sequelize: Sequelize): typeof User {
             role: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            verified: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
             },
             createdAt: {
                 type: DataTypes.DATE,
